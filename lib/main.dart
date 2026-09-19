@@ -412,7 +412,8 @@ class _VenueFeature extends StatelessWidget {
         subtitle: Text(text),
       );
 }
-  final IconData icon;
+  class ExploreCard extends StatelessWidget {
+final IconData icon;
   final String title, text;
   final VoidCallback? onTap;
 
