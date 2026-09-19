@@ -232,7 +232,16 @@ class ExplorePage extends StatelessWidget {
 class ExploreCard extends StatelessWidget {
   final IconData icon;
   final String title, text;
-  const ExploreCard(this.icon, this.title, this.text, {super.key});
+  final VoidCallback? onTap;
+
+  const ExploreCard(
+    this.icon,
+    this.title,
+    this.text, {
+    super.key,
+    this.onTap,
+  });
+
   @override
   Widget build(BuildContext context) => Card(
         elevation: 0,
@@ -240,12 +249,16 @@ class ExploreCard extends StatelessWidget {
         child: ListTile(
           contentPadding: const EdgeInsets.all(15),
           leading: CircleAvatar(
-              backgroundColor: gold.withOpacity(.18),
-              child: Icon(icon, color: navy)),
-          title: Text(title,
-              style: const TextStyle(fontWeight: FontWeight.w800)),
+            backgroundColor: gold.withOpacity(.18),
+            child: Icon(icon, color: navy),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w800),
+          ),
           subtitle: Text(text),
           trailing: const Icon(Icons.chevron_right),
+          onTap: onTap,
         ),
       );
 }
