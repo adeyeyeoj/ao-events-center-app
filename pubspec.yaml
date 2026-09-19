@@ -18,3 +18,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - AO_Events_Center_icon_preview.png
