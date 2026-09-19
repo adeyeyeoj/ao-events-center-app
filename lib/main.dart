@@ -211,12 +211,24 @@ class ExplorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: const Text('Explore')),
-        body: ListView(padding: const EdgeInsets.all(20), children: const [
+        body: ListView(padding: const EdgeInsets.all(20), children: [
           Text('Discover AO Events Center',
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900)),
           SizedBox(height: 20),
-          ExploreCard(Icons.apartment, 'The Venue',
-              'A spacious event environment for up to 1,200 guests.'),
+          ExploreCard(
+  Icons.apartment,
+  'The Venue',
+  'A spacious event environment for up to 1,200 guests.',
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const VenuePage(),
+      ),
+    );
+  },
+),
+    
           ExploreCard(Icons.auto_awesome, 'Facilities',
               'Stage, sound, lighting, seating, changing rooms and more.'),
           ExploreCard(Icons.celebration, 'Event Types',
@@ -229,7 +241,177 @@ class ExplorePage extends StatelessWidget {
       );
 }
 
-class ExploreCard extends StatelessWidget {
+class VenuePage extends StatelessWidget {
+  const VenuePage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('The Venue'),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const Text(
+              'A Venue Designed for Exceptional Events',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+                color: navy,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'AO Events Center provides a spacious and elegant environment '
+              'designed to accommodate memorable celebrations, weddings, '
+              'corporate events and other special occasions.',
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            _VenueInfoCard(
+              icon: Icons.people_outline,
+              value: '1,200',
+              label: 'Guest Capacity',
+            ),
+            _VenueInfoCard(
+              icon: Icons.local_parking_outlined,
+              value: '500',
+              label: 'Vehicle Parking',
+            ),
+            _VenueInfoCard(
+              icon: Icons.bolt_outlined,
+              value: '24/7',
+              label: 'Power Supply',
+            ),
+
+            const SizedBox(height: 12),
+
+            const Text(
+              'Why Choose AO Events Center?',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: navy,
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            const _VenueFeature(
+              icon: Icons.celebration_outlined,
+              title: 'Spacious Event Hall',
+              text: 'A large event space suitable for intimate and large gatherings.',
+            ),
+            const _VenueFeature(
+              icon: Icons.local_parking_outlined,
+              title: 'Ample Parking',
+              text: 'Convenient parking space for guests and event attendees.',
+            ),
+            const _VenueFeature(
+              icon: Icons.bolt_outlined,
+              title: '24-Hour Power',
+              text: 'Reliable power supply to keep your event running smoothly.',
+            ),
+            const _VenueFeature(
+              icon: Icons.security_outlined,
+              title: 'Security & CCTV',
+              text: 'Security arrangements and CCTV coverage for peace of mind.',
+            ),
+            const _VenueFeature(
+              icon: Icons.meeting_room_outlined,
+              title: 'Event-Ready Facilities',
+              text: 'Stage, sound, lighting, seating, changing rooms and restrooms.',
+            ),
+
+            const SizedBox(height: 24),
+
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const BookingWizard(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.calendar_month),
+              label: const Text('Book Your Event'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: gold,
+                foregroundColor: navy,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+class _VenueInfoCard extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+
+  const _VenueInfoCard({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) => Card(
+        elevation: 0,
+        margin: const EdgeInsets.only(bottom: 12),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: gold.withOpacity(.18),
+            child: Icon(icon, color: navy),
+          ),
+          title: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+              color: navy,
+            ),
+          ),
+          subtitle: Text(label),
+        ),
+      );
+}
+
+class _VenueFeature extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String text;
+
+  const _VenueFeature({
+    required this.icon,
+    required this.title,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Icon(icon, color: gold, size: 28),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+            color: navy,
+          ),
+        ),
+        subtitle: Text(text),
+      );
+}
   final IconData icon;
   final String title, text;
   final VoidCallback? onTap;
