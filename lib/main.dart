@@ -90,13 +90,12 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           children: [
             Row(children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                    color: gold, borderRadius: BorderRadius.circular(15)),
-                child: const Icon(Icons.apartment, color: navy),
-              ),
+              Image.asset(
+  'AO_Events_Center_icon_preview.png',
+  width: 52,
+  height: 52,
+  fit: BoxFit.contain,
+),
               const SizedBox(width: 12),
               const Expanded(
                 child: Column(
