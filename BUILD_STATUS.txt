@@ -1,0 +1,3 @@
+PROJECT CONSOLIDATED: yes
+FLUTTER COMPILATION IN THIS CHAT ENVIRONMENT: unavailable
+NEXT: cloud build using codemagic.yaml

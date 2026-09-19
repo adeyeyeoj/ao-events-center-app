@@ -1,0 +1,30 @@
+plugins {
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace = "com.aoeventscenter.app"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.aoeventscenter.app"
+        minSdk = 23
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0.0"
+    }
+
+    buildTypes {
+        release {
+            // Temporary debug signing for local/cloud test builds only.
+            // Replace with production upload-key signing before Play Store release.
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
