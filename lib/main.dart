@@ -252,6 +252,133 @@ class ExplorePage extends StatelessWidget {
       );
 }
 
+class FacilitiesPage extends StatelessWidget {
+  const FacilitiesPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Facilities'),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: const [
+            Text(
+              'Everything Your Event Needs',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+                color: navy,
+              ),
+            ),
+            SizedBox(height: 12),
+            Text(
+              'AO Events Center provides event-ready facilities designed '
+              'to help create a comfortable, organized and memorable experience.',
+              style: TextStyle(
+                fontSize: 16,
+                height: 1.5,
+              ),
+            ),
+            SizedBox(height: 24),
+
+            _FacilityItem(
+              icon: Icons.celebration_outlined,
+              title: 'Stage',
+              description:
+                  'A dedicated stage area suitable for ceremonies, performances and presentations.',
+            ),
+            _FacilityItem(
+              icon: Icons.graphic_eq_outlined,
+              title: 'Sound System',
+              description:
+                  'Event-ready sound equipment to support speeches, music and entertainment.',
+            ),
+            _FacilityItem(
+              icon: Icons.lightbulb_outline,
+              title: 'Lighting',
+              description:
+                  'Professional event lighting to enhance the atmosphere and presentation of your occasion.',
+            ),
+            _FacilityItem(
+              icon: Icons.chair_outlined,
+              title: 'Chairs & Tables',
+              description:
+                  'Seating and tables available to help organize your event space.',
+            ),
+            _FacilityItem(
+              icon: Icons.meeting_room_outlined,
+              title: 'Changing Rooms',
+              description:
+                  'Dedicated changing areas for event hosts, celebrants and other guests.',
+            ),
+            _FacilityItem(
+              icon: Icons.wc_outlined,
+              title: 'Restrooms',
+              description:
+                  'Convenient restroom facilities for guests and event attendees.',
+            ),
+            _FacilityItem(
+              icon: Icons.videocam_outlined,
+              title: 'CCTV',
+              description:
+                  'CCTV coverage around the venue to support venue security.',
+            ),
+            _FacilityItem(
+              icon: Icons.security_outlined,
+              title: 'Security',
+              description:
+                  'Security arrangements to help provide a safe and comfortable event environment.',
+            ),
+            _FacilityItem(
+              icon: Icons.bolt_outlined,
+              title: '24-Hour Power',
+              description:
+                  'Reliable power supply to support your event throughout the day and night.',
+            ),
+          ],
+        ),
+      );
+}
+
+class _FacilityItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+
+  const _FacilityItem({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) => Card(
+        elevation: 0,
+        margin: const EdgeInsets.only(bottom: 12),
+        child: ListTile(
+          contentPadding: const EdgeInsets.all(16),
+          leading: CircleAvatar(
+            backgroundColor: gold.withOpacity(.18),
+            child: Icon(icon, color: navy),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              color: navy,
+            ),
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(
+              description,
+              style: const TextStyle(height: 1.4),
+            ),
+          ),
+        ),
+      );
+}
 class VenuePage extends StatelessWidget {
   const VenuePage({super.key});
 
