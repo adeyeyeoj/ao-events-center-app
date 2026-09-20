@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const navy = Color(0xFF071A33);
 const gold = Color(0xFFD4AF37);
