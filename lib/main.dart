@@ -518,7 +518,8 @@ class _FacilityItem extends StatelessWidget {
           ),
         ),
       );
-  class GalleryPage extends StatelessWidget {
+}
+class GalleryPage extends StatelessWidget {
   const GalleryPage({super.key});
 
   @override
