@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 const navy = Color(0xFF071A33);
 const gold = Color(0xFFD4AF37);
@@ -613,6 +614,85 @@ class GalleryPage extends StatelessWidget {
                 ),
               );
             },
+          ),
+        ],
+      ),
+    );
+  }
+}
+class GalleryVideo extends StatefulWidget {
+  final String assetPath;
+
+  const GalleryVideo({
+    super.key,
+    required this.assetPath,
+  });
+
+  @override
+  State<GalleryVideo> createState() => _GalleryVideoState();
+}
+
+class _GalleryVideoState extends State<GalleryVideo> {
+  late final VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.asset(widget.assetPath)
+      ..initialize().then((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_controller.value.isInitialized) {
+      return Container(
+        height: 210,
+        decoration: BoxDecoration(
+          color: navy,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
+          ),
+          IconButton(
+            iconSize: 56,
+            color: Colors.white,
+            onPressed: () {
+              setState(() {
+                if (_controller.value.isPlaying) {
+                  _controller.pause();
+                } else {
+                  _controller.play();
+                }
+              });
+            },
+            icon: Icon(
+              _controller.value.isPlaying
+                  ? Icons.pause_circle_filled
+                  : Icons.play_circle_fill,
+            ),
           ),
         ],
       ),
