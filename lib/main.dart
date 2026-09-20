@@ -242,8 +242,19 @@ class ExplorePage extends StatelessWidget {
     );
   },
 ),
-          ExploreCard(Icons.celebration, 'Event Types',
-              'Weddings, birthdays, engagements, corporate events and more.'),
+          ExploreCard(
+  Icons.celebration,
+  'Event Types',
+  'Weddings, birthdays, engagements, corporate events and more.',
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const EventTypesPage(),
+      ),
+    );
+  },
+),
           ExploreCard(Icons.photo_library_outlined, 'Gallery',
               'View venue spaces and approved event imagery.'),
           ExploreCard(Icons.location_on_outlined, 'Contact & Location',
@@ -251,7 +262,125 @@ class ExplorePage extends StatelessWidget {
         ]),
       );
 }
+class EventTypesPage extends StatelessWidget {
+  const EventTypesPage({super.key});
 
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Event Types'),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const Text(
+              'Celebrate Every Occasion',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'From intimate celebrations to large-scale events, '
+              'AO Events Center provides a spacious and flexible setting '
+              'for your special occasion.',
+              style: TextStyle(
+                fontSize: 15,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            _eventTypeCard(
+              context,
+              Icons.favorite,
+              'Weddings',
+              'Create a beautiful and memorable wedding celebration '
+                  'in a spacious event environment.',
+            ),
+
+            _eventTypeCard(
+              context,
+              Icons.cake,
+              'Birthday Parties',
+              'Celebrate birthdays with family and friends in a '
+                  'comfortable and event-ready venue.',
+            ),
+
+            _eventTypeCard(
+              context,
+              Icons.favorite_border,
+              'Engagement Parties',
+              'Mark your special milestone with an elegant engagement '
+                  'celebration.',
+            ),
+
+            _eventTypeCard(
+              context,
+              Icons.local_florist,
+              'Burial Receptions',
+              'A respectful and spacious setting for family gatherings '
+                  'and burial receptions.',
+            ),
+
+            _eventTypeCard(
+              context,
+              Icons.business,
+              'Corporate Events',
+              'Host corporate gatherings, meetings, launches and '
+                  'professional events.',
+            ),
+
+            _eventTypeCard(
+              context,
+              Icons.mic,
+              'Conferences, Seminars & Launches',
+              'A versatile venue for conferences, seminars, product '
+                  'launches and other large gatherings.',
+            ),
+          ],
+        ),
+      );
+
+  Widget _eventTypeCard(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String description,
+  ) {
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 14),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(16),
+        leading: CircleAvatar(
+          backgroundColor: gold.withOpacity(.18),
+          child: Icon(
+            icon,
+            color: navy,
+          ),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 16,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Text(
+            description,
+            style: const TextStyle(
+              height: 1.4,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 class FacilitiesPage extends StatelessWidget {
   const FacilitiesPage({super.key});
 
