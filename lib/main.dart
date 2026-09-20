@@ -269,8 +269,19 @@ class ExplorePage extends StatelessWidget {
     );
   },
 ),
-          ExploreCard(Icons.location_on_outlined, 'Contact & Location',
-              'Find and contact the venue.'),
+          ExploreCard(
+  Icons.location_on_outlined,
+  'Contact & Location',
+  'Find and contact the venue.',
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LocationPage(),
+      ),
+    );
+  },
+),
         ]),
       );
 }
@@ -389,6 +400,215 @@ class EventTypesPage extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+class LocationPage extends StatelessWidget {
+  const LocationPage({super.key});
+
+  Future<void> _openMaps() async {
+    final uri = Uri.parse(
+      'https://maps.app.goo.gl/w6XjS1X8vmZHuY55A',
+    );
+
+    await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
+  Future<void> _callVenue() async {
+    final uri = Uri.parse('tel:08101314792');
+
+    await launchUrl(uri);
+  }
+
+  Future<void> _openWhatsApp() async {
+    final uri = Uri.parse(
+      'https://wa.me/2348101314792',
+    );
+
+    await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
+  Future<void> _sendEmail() async {
+    final uri = Uri(
+      scheme: 'mailto',
+      path: 'info@aoeventcenter.com',
+    );
+
+    await launchUrl(uri);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Contact & Location'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const Text(
+            'Find AO Events Center',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              color: navy,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Plan your visit, contact our team, or get directions to the venue.',
+            style: TextStyle(
+              fontSize: 16,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          Card(
+            elevation: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.location_on,
+                    color: navy,
+                    size: 34,
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'AO Events Center',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: navy,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Ayodeji Oyebobola Street, Abijo G.R.A., '
+                    'Logistics Pham Bus Stop, '
+                    'Lekki–Epe Expressway, Lagos.',
+                    style: TextStyle(
+                      fontSize: 15,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _openMaps,
+                      icon: const Icon(Icons.directions),
+                      label: const Text('Get Directions'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          Card(
+            elevation: 0,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: gold.withOpacity(.18),
+                    child: const Icon(
+                      Icons.phone,
+                      color: navy,
+                    ),
+                  ),
+                  title: const Text(
+                    'Call Us',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  subtitle: const Text('08101314792'),
+                  onTap: _callVenue,
+                ),
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: gold.withOpacity(.18),
+                    child: const Icon(
+                      Icons.chat,
+                      color: navy,
+                    ),
+                  ),
+                  title: const Text(
+                    'WhatsApp',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  subtitle: const Text('Chat with AO Events Center'),
+                  onTap: _openWhatsApp,
+                ),
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: gold.withOpacity(.18),
+                    child: const Icon(
+                      Icons.email,
+                      color: navy,
+                    ),
+                  ),
+                  title: const Text(
+                    'Email Us',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  subtitle: const Text('info@aoeventcenter.com'),
+                  onTap: _sendEmail,
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: gold.withOpacity(.15),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: navy,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Tap Get Directions to open the AO Events Center '
+                    'location in Google Maps and navigate from your '
+                    'current location.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
