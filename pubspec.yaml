@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  video_player: ^2.14.0
 
 dev_dependencies:
   flutter_test:
@@ -19,6 +20,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  assets:
+    assets:
     - AO_Events_Center_icon_preview.png
     - assets/gallery/concept/
+    - assets/gallery/videos/
