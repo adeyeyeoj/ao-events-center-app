@@ -619,7 +619,6 @@ class GalleryPage extends StatelessWidget {
     );
   }
 }
-}
 class VenuePage extends StatelessWidget {
   const VenuePage({super.key});
 
