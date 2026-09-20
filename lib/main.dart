@@ -615,6 +615,27 @@ class GalleryPage extends StatelessWidget {
               );
             },
           ),
+                    const SizedBox(height: 28),
+          const Text(
+            'Venue Videos',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: navy,
+            ),
+          ),
+          const SizedBox(height: 14),
+          GalleryVideo(
+            assetPath: 'assets/gallery/videos/venue-video-1.mp4',
+          ),
+          const SizedBox(height: 16),
+          GalleryVideo(
+            assetPath: 'assets/gallery/videos/venue-video-2.mp4',
+          ),
+          const SizedBox(height: 16),
+          GalleryVideo(
+            assetPath: 'assets/gallery/videos/venue-video-3.mp4',
+          ),
         ],
       ),
     );
