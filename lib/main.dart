@@ -229,8 +229,19 @@ class ExplorePage extends StatelessWidget {
   },
 ),
     
-          ExploreCard(Icons.auto_awesome, 'Facilities',
-              'Stage, sound, lighting, seating, changing rooms and more.'),
+          ExploreCard(
+  Icons.auto_awesome,
+  'Facilities',
+  'Stage, sound, lighting, seating, changing rooms and more.',
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const FacilitiesPage(),
+      ),
+    );
+  },
+),
           ExploreCard(Icons.celebration, 'Event Types',
               'Weddings, birthdays, engagements, corporate events and more.'),
           ExploreCard(Icons.photo_library_outlined, 'Gallery',
