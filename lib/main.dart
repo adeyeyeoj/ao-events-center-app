@@ -255,8 +255,19 @@ class ExplorePage extends StatelessWidget {
     );
   },
 ),
-          ExploreCard(Icons.photo_library_outlined, 'Gallery',
-              'View venue spaces and approved event imagery.'),
+          ExploreCard(
+  Icons.photo_library_outlined,
+  'Gallery',
+  'View venue spaces and approved event imagery.',
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const GalleryPage(),
+      ),
+    );
+  },
+),
           ExploreCard(Icons.location_on_outlined, 'Contact & Location',
               'Find and contact the venue.'),
         ]),
@@ -507,6 +518,106 @@ class _FacilityItem extends StatelessWidget {
           ),
         ),
       );
+  class GalleryPage extends StatelessWidget {
+  const GalleryPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final photos = [
+      'assets/gallery/concept/venue-front.jpg',
+      'assets/gallery/concept/venue-gate.jpg',
+      'assets/gallery/concept/venue-side-1.jpg',
+      'assets/gallery/concept/venue-side-2.jpg',
+      'assets/gallery/concept/hall-setup-1.jpg',
+      'assets/gallery/concept/hall-setup-2.jpg',
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Gallery'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const Text(
+            'Explore AO Events Center',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              color: navy,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Take a look at the venue concept, event spaces and visual possibilities available at AO Events Center.',
+            style: TextStyle(
+              fontSize: 16,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: gold.withOpacity(.15),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: navy,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Concept / Future Visualization: Some images in this gallery are architectural renderings intended to illustrate the planned venue and event environment.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Venue & Event Spaces',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: navy,
+            ),
+          ),
+          const SizedBox(height: 14),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: photos.length,
+            gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: .85,
+            ),
+            itemBuilder: (context, index) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  photos[index],
+                  fit: BoxFit.cover,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
 }
 class VenuePage extends StatelessWidget {
   const VenuePage({super.key});
