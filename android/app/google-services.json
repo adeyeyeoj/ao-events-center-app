@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "89291002753",
+    "project_id": "ao-events-center",
+    "storage_bucket": "ao-events-center.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89291002753:android:673e71cd0e3e610e800e80",
+        "android_client_info": {
+          "package_name": "com.aoeventscenter.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD09gph-5L9hlp_B0tj_L6gfXOuSvC9Nxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
