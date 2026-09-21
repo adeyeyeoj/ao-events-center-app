@@ -1194,7 +1194,6 @@ class _BookingWizardState extends State<BookingWizard> {
                   TextButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        Navigator.pop(context);
                       },
                       child: const Text('Done'))
                 ],
