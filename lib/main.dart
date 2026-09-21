@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 const navy = Color(0xFF071A33);
 const gold = Color(0xFFD4AF37);
@@ -1174,32 +1176,87 @@ class _BookingWizardState extends State<BookingWizard> {
     return true;
   }
 
-  void next() {
-    if (!valid()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please complete the required fields.')));
-      return;
-    }
-    if (step < 3) {
-      setState(() => step++);
-    } else {
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (_) => AlertDialog(
-                title: const Text('Request Received!'),
-                content: const Text(
-                    'Your booking request has been prepared. A unique reference will be generated when the live backend is connected.'),
-                actions: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Done'))
-                ],
-              ));
-    }
+  Future<void> next() async {
+  if (!valid()) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please complete the required fields.'),
+      ),
+    );
+    return;
   }
+
+  if (step < 3) {
+    setState(() => step++);
+    return;
+  }
+
+  try {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      final credential =
+          await FirebaseAuth.instance.signInAnonymously();
+      user = credential.user;
+    }
+
+    if (user == null) {
+      throw Exception('Unable to create customer session.');
+    }
+
+    final bookingRef =
+        FirebaseFirestore.instance.collection('bookings').doc();
+
+    await bookingRef.set({
+      'reference': bookingRef.id,
+      'userId': user.uid,
+      'eventType': data.event,
+      'eventDate': data.date,
+      'startTime': data.start,
+      'endTime': data.end,
+      'guests': data.guests,
+      'budget': data.budget,
+      'customerName': data.name,
+      'phone': data.phone,
+      'email': data.email,
+      'notes': data.notes,
+      'status': 'pending',
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    if (!mounted) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: const Text('Request Received!'),
+        content: Text(
+          'Your booking request has been submitted successfully.\n\n'
+          'Booking reference: ${bookingRef.id}',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Done'),
+          ),
+        ],
+      ),
+    );
+  } catch (e) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Unable to submit your booking. Please try again.',
+        ),
+      ),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) => Scaffold(
