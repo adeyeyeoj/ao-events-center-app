@@ -1478,24 +1478,252 @@ class ReviewRow extends StatelessWidget {
       );
 }
 
-class BookingsPage extends StatelessWidget {
+class BookingsPage extends StatefulWidget {
   const BookingsPage({super.key});
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('My Bookings')),
-        body: ListView(padding: const EdgeInsets.all(20), children: const [
-          SizedBox(height: 70),
-          Icon(Icons.event_note, size: 72, color: navy),
-          SizedBox(height: 15),
-          Center(
-              child: Text('No bookings yet',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800))),
-          SizedBox(height: 8),
-          Center(child: Text('Your booking requests will appear here.')),
-        ]),
-      );
+  State<BookingsPage> createState() => _BookingsPageState();
 }
 
+class _BookingsPageState extends State<BookingsPage> {
+  Future<User?> _getUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      final credential =
+          await FirebaseAuth.instance.signInAnonymously();
+      user = credential.user;
+    }
+
+    return user;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Bookings'),
+      ),
+      body: FutureBuilder<User?>(
+        future: _getUser(),
+        builder: (context, userSnapshot) {
+          if (userSnapshot.connectionState ==
+              ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          final user = userSnapshot.data;
+
+          if (user == null) {
+            return const Center(
+              child: Text(
+                'Unable to load your bookings.',
+              ),
+            );
+          }
+
+          return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            stream: FirebaseFirestore.instance
+                .collection('bookings')
+                .where('userId', isEqualTo: user.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState ==
+                  ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text(
+                    'Unable to load your bookings.',
+                  ),
+                );
+              }
+
+              final bookings = snapshot.data?.docs ?? [];
+
+              if (bookings.isEmpty) {
+                return ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: const [
+                    SizedBox(height: 70),
+                    Icon(
+                      Icons.event_note,
+                      size: 72,
+                      color: navy,
+                    ),
+                    SizedBox(height: 15),
+                    Center(
+                      child: Text(
+                        'No bookings yet',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Center(
+                      child: Text(
+                        'Your booking requests will appear here.',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(20),
+                itemCount: bookings.length,
+                itemBuilder: (context, index) {
+                  final booking = bookings[index].data();
+
+                  final status =
+                      booking['status']?.toString() ?? 'pending';
+
+                  return Card(
+                    elevation: 0,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(
+                                backgroundColor: Color(0x1FDFA437),
+                                child: Icon(
+                                  Icons.event,
+                                  color: navy,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  booking['eventType']
+                                          ?.toString() ??
+                                      'Event',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    color: navy,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: gold.withOpacity(.18),
+                                  borderRadius:
+                                      BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  status.toUpperCase(),
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                    color: navy,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Reference: ${booking['reference'] ?? bookings[index].id}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          const Divider(height: 24),
+                          _BookingInfoRow(
+                            Icons.calendar_today_outlined,
+                            'Date',
+                            booking['eventDate']?.toString() ?? '-',
+                          ),
+                          _BookingInfoRow(
+                            Icons.access_time,
+                            'Time',
+                            '${booking['startTime'] ?? '-'} - ${booking['endTime'] ?? '-'}',
+                          ),
+                          _BookingInfoRow(
+                            Icons.groups_outlined,
+                            'Guests',
+                            '${booking['guests'] ?? '-'}',
+                          ),
+                          _BookingInfoRow(
+                            Icons.payments_outlined,
+                            'Budget',
+                            booking['budget']?.toString() ?? '-',
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _BookingInfoRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _BookingInfoRow(
+    this.icon,
+    this.label,
+    this.value, {
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            size: 20,
+            color: navy,
+          ),
+          const SizedBox(width: 12),
+          SizedBox(
+            width: 70,
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(value),
+          ),
+        ],
+      ),
+    );
+  }
+}
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
   @override
