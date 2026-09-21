@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 const navy = Color(0xFF071A33);
 const gold = Color(0xFFD4AF37);
 const bg = Color(0xFFF7F8FA);
 
-void main() => runApp(const AOEventsApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const AOEventsApp());
+}
 
 class AOEventsApp extends StatelessWidget {
   const AOEventsApp({super.key});
