@@ -2164,6 +2164,140 @@ class _AdminDashboardCard extends StatelessWidget {
     );
   }
 }
+class AvailabilityPage extends StatelessWidget {
+  const AvailabilityPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Availability'),
+      ),
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance
+            .collection('bookings')
+            .where('status', isEqualTo: 'approved')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text(
+                'Unable to load availability.',
+              ),
+            );
+          }
+
+          final bookings = snapshot.data?.docs ?? [];
+
+          if (bookings.isEmpty) {
+            return ListView(
+              padding: const EdgeInsets.all(20),
+              children: const [
+                SizedBox(height: 70),
+                Icon(
+                  Icons.event_available,
+                  size: 72,
+                  color: navy,
+                ),
+                SizedBox(height: 16),
+                Center(
+                  child: Text(
+                    'No approved bookings',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    'No upcoming approved events are currently recorded.',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(20),
+            itemCount: bookings.length,
+            itemBuilder: (context, index) {
+              final booking = bookings[index].data();
+
+              return Card(
+                elevation: 0,
+                margin: const EdgeInsets.only(bottom: 16),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const CircleAvatar(
+                            backgroundColor: Color(0x1FDFA437),
+                            child: Icon(
+                              Icons.event_available,
+                              color: navy,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              booking['eventType']?.toString() ??
+                                  'Event',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                                color: navy,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 28),
+                      Text(
+                        'Date: ${booking['eventDate']?.toString() ?? '-'}',
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Time: ${booking['startTime']?.toString() ?? '-'} - ${booking['endTime']?.toString() ?? '-'}',
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Customer: ${booking['customerName']?.toString() ?? '-'}',
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Guests: ${booking['guests']?.toString() ?? '-'}',
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Reference: ${booking['reference']?.toString() ?? bookings[index].id}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
 class BookingRequestsPage extends StatelessWidget {
   const BookingRequestsPage({super.key});
 
