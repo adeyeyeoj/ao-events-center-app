@@ -2310,7 +2310,29 @@ class BookingRequestsPage extends StatelessWidget {
                             const SizedBox(width: 12),
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () async {
+  try {
+    await bookings[index].reference.update({
+      'status': 'approved',
+    });
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Booking approved successfully.'),
+      ),
+    );
+  } catch (e) {
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Unable to approve booking.'),
+      ),
+    );
+  }
+},
                                 child: const Text('Approve'),
                               ),
                             ),
