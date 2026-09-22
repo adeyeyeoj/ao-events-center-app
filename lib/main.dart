@@ -2502,48 +2502,6 @@ class _PricingEditorPageState extends State<PricingEditorPage> {
     );
   }
 }
-
-class _PricingCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const _PricingCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      margin: const EdgeInsets.only(bottom: 14),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        leading: CircleAvatar(
-          backgroundColor: gold.withOpacity(.18),
-          child: Icon(
-            icon,
-            color: navy,
-          ),
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: Text(subtitle),
-        ),
-        trailing: const Icon(
-          Icons.chevron_right,
-        ),
-      ),
-    );
-  }
 }
 class _AdminDashboardCard extends StatelessWidget {
   final IconData icon;
