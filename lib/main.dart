@@ -2133,6 +2133,39 @@ class AdminDashboardPage extends StatelessWidget {
 class PricingPage extends StatelessWidget {
   const PricingPage({super.key});
 
+  static const pricingItems = [
+    {
+      'id': 'venue_hire',
+      'title': 'Venue Hire',
+      'subtitle': 'Set the standard venue hire price.',
+      'icon': Icons.apartment_outlined,
+    },
+    {
+      'id': 'weddings',
+      'title': 'Weddings',
+      'subtitle': 'Set pricing for wedding events.',
+      'icon': Icons.favorite_outline,
+    },
+    {
+      'id': 'birthday_parties',
+      'title': 'Birthday Parties',
+      'subtitle': 'Set pricing for birthday events.',
+      'icon': Icons.cake_outlined,
+    },
+    {
+      'id': 'corporate_events',
+      'title': 'Corporate Events',
+      'subtitle': 'Set pricing for corporate events.',
+      'icon': Icons.business_outlined,
+    },
+    {
+      'id': 'other_events',
+      'title': 'Other Events',
+      'subtitle': 'Set pricing for other event categories.',
+      'icon': Icons.event_outlined,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -2157,37 +2190,16 @@ class PricingPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          _PricingCard(
-            icon: Icons.apartment_outlined,
-            title: 'Venue Hire',
-            subtitle: 'Set the standard venue hire price.',
+          ...pricingItems.map(
+            (item) => _PricingCard(
+              id: item['id']! as String,
+              icon: item['icon']! as IconData,
+              title: item['title']! as String,
+              subtitle: item['subtitle']! as String,
+            ),
           ),
 
-          _PricingCard(
-            icon: Icons.favorite_outline,
-            title: 'Weddings',
-            subtitle: 'Set pricing for wedding events.',
-          ),
-
-          _PricingCard(
-            icon: Icons.cake_outlined,
-            title: 'Birthday Parties',
-            subtitle: 'Set pricing for birthday events.',
-          ),
-
-          _PricingCard(
-            icon: Icons.business_outlined,
-            title: 'Corporate Events',
-            subtitle: 'Set pricing for corporate events.',
-          ),
-
-          _PricingCard(
-            icon: Icons.event_outlined,
-            title: 'Other Events',
-            subtitle: 'Set pricing for other event categories.',
-          ),
-
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
 
           Container(
             padding: const EdgeInsets.all(16),
@@ -2205,10 +2217,284 @@ class PricingPage extends StatelessWidget {
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Pricing will be connected to the Firebase database so changes can be managed from the admin area.',
+                    'Tap any pricing category to enter or update its current price. Changes are saved securely to Firebase.',
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PricingCard extends StatelessWidget {
+  final String id;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _PricingCard({
+    required this.id,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  String _formatAmount(dynamic amount) {
+    if (amount == null) return 'Price not set';
+
+    final value = amount is num
+        ? amount.toInt()
+        : int.tryParse(amount.toString());
+
+    if (value == null) return 'Price not set';
+
+    final text = value.toString();
+    final buffer = StringBuffer();
+
+    for (int i = 0; i < text.length; i++) {
+      if (i > 0 && (text.length - i) % 3 == 0) {
+        buffer.write(',');
+      }
+      buffer.write(text[i]);
+    }
+
+    return '₦${buffer.toString()}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('pricing')
+          .doc(id)
+          .snapshots(),
+      builder: (context, snapshot) {
+        final data = snapshot.data?.data();
+        final amount = data?['amount'];
+
+        return Card(
+          elevation: 0,
+          margin: const EdgeInsets.only(bottom: 14),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(16),
+            leading: CircleAvatar(
+              backgroundColor: gold.withOpacity(.18),
+              child: Icon(
+                icon,
+                color: navy,
+              ),
+            ),
+            title: Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                amount == null
+                    ? subtitle
+                    : 'Current price: ${_formatAmount(amount)}',
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PricingEditorPage(
+                    documentId: id,
+                    title: title,
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class PricingEditorPage extends StatefulWidget {
+  final String documentId;
+  final String title;
+
+  const PricingEditorPage({
+    super.key,
+    required this.documentId,
+    required this.title,
+  });
+
+  @override
+  State<PricingEditorPage> createState() => _PricingEditorPageState();
+}
+
+class _PricingEditorPageState extends State<PricingEditorPage> {
+  final controller = TextEditingController();
+  bool loading = true;
+  bool saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPrice();
+  }
+
+  Future<void> _loadPrice() async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('pricing')
+          .doc(widget.documentId)
+          .get();
+
+      if (doc.exists) {
+        final amount = doc.data()?['amount'];
+
+        if (amount != null) {
+          controller.text = amount.toString();
+        }
+      }
+    } catch (_) {
+      // The page remains usable if no price has been saved yet.
+    }
+
+    if (mounted) {
+      setState(() => loading = false);
+    }
+  }
+
+  Future<void> _savePrice() async {
+    final value = int.tryParse(
+      controller.text.replaceAll(',', '').trim(),
+    );
+
+    if (value == null || value < 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid price.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() => saving = true);
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        throw Exception('Admin session not found.');
+      }
+
+      await FirebaseFirestore.instance
+          .collection('pricing')
+          .doc(widget.documentId)
+          .set({
+        'name': widget.title,
+        'amount': value,
+        'updatedBy': user.uid,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Price saved successfully.'),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Unable to save price. Please try again.',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => saving = false);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          Text(
+            widget.title,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              color: navy,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Enter the current price for this category.',
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 28),
+
+          TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              labelText: 'Price',
+              hintText: 'e.g. 450000',
+              prefixText: '₦ ',
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          SizedBox(
+            height: 52,
+            child: ElevatedButton(
+              onPressed: loading || saving ? null : _savePrice,
+              child: saving
+                  ? const CircularProgressIndicator()
+                  : const Text(
+                      'Save Price',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: gold.withOpacity(.12),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Text(
+              'This price is saved to the AO Events Center Firebase database and can be updated whenever necessary.',
             ),
           ),
         ],
