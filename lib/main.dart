@@ -294,108 +294,85 @@ class ExplorePage extends StatelessWidget {
       );
 }
 class EventTypesPage extends StatelessWidget {
-class EventTypesPage extends StatelessWidget {
   const EventTypesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Event Types'),
-      ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance
-            .collection('eventTypes')
-            .orderBy('order')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text(
-                'Unable to load event types.',
-                textAlign: TextAlign.center,
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Event Types'),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const Text(
+              'Celebrate Every Occasion',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
               ),
-            );
-          }
-
-          final eventTypes = snapshot.data?.docs ?? [];
-
-          if (eventTypes.isEmpty) {
-            return ListView(
-              padding: const EdgeInsets.all(20),
-              children: const [
-                SizedBox(height: 70),
-                Icon(
-                  Icons.celebration_outlined,
-                  size: 72,
-                  color: navy,
-                ),
-                SizedBox(height: 15),
-                Center(
-                  child: Text(
-                    'Event Types',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
-                      color: navy,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Center(
-                  child: Text(
-                    'Our supported event types will appear here.',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            );
-          }
-
-          return ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              const Text(
-                'Celebrate Every Occasion',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'From intimate celebrations to large-scale events, '
+              'AO Events Center provides a spacious and flexible setting '
+              'for your special occasion.',
+              style: TextStyle(
+                fontSize: 15,
+                height: 1.5,
               ),
-              const SizedBox(height: 10),
-              const Text(
-                'From intimate celebrations to large-scale gatherings, '
-                'AO Events Center provides a spacious and welcoming venue '
-                'for your special occasion.',
-                style: TextStyle(
-                  fontSize: 15,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 24),
+            ),
+            const SizedBox(height: 24),
 
-              ...eventTypes.map((doc) {
-                final data = doc.data();
+            _eventTypeCard(
+              context,
+              Icons.favorite,
+              'Weddings',
+              'Create a beautiful and memorable wedding celebration '
+                  'in a spacious event environment.',
+            ),
 
-                return _eventTypeCard(
-                  context,
-                  Icons.celebration,
-                  data['title']?.toString() ?? 'Event',
-                  data['description']?.toString() ?? '',
-                );
-              }),
-            ],
-          );
-        },
-      ),
-    );
-  }
+            _eventTypeCard(
+              context,
+              Icons.cake,
+              'Birthday Parties',
+              'Celebrate birthdays with family and friends in a '
+                  'comfortable and event-ready venue.',
+            ),
+
+            _eventTypeCard(
+              context,
+              Icons.favorite_border,
+              'Engagement Parties',
+              'Mark your special milestone with an elegant engagement '
+                  'celebration.',
+            ),
+
+            _eventTypeCard(
+              context,
+              Icons.local_florist,
+              'Burial Receptions',
+              'A respectful and spacious setting for family gatherings '
+                  'and burial receptions.',
+            ),
+
+            _eventTypeCard(
+              context,
+              Icons.business,
+              'Corporate Events',
+              'Host corporate gatherings, meetings, launches and '
+                  'professional events.',
+            ),
+
+            _eventTypeCard(
+              context,
+              Icons.mic,
+              'Conferences, Seminars & Launches',
+              'A versatile venue for conferences, seminars, product '
+                  'launches and other large gatherings.',
+            ),
+          ],
+        ),
+      );
 
   Widget _eventTypeCard(
     BuildContext context,
