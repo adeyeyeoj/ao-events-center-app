@@ -2116,7 +2116,14 @@ class AdminDashboardPage extends StatelessWidget {
             icon: Icons.notifications_outlined,
             title: 'Notifications',
             subtitle: 'Manage customer notifications and updates.',
-            onTap: () {},
+            onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const NotificationsPage(),
+    ),
+  );
+},
           ),
 
           _AdminDashboardCard(
@@ -2126,6 +2133,108 @@ class AdminDashboardPage extends StatelessWidget {
             onTap: () {},
           ),
         ],
+      ),
+    );
+  }
+}
+class NotificationsPage extends StatelessWidget {
+  const NotificationsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notifications'),
+      ),
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance
+            .collection('notifications')
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text(
+                'Unable to load notifications.',
+              ),
+            );
+          }
+
+          final notifications = snapshot.data?.docs ?? [];
+
+          if (notifications.isEmpty) {
+            return ListView(
+              padding: const EdgeInsets.all(20),
+              children: const [
+                SizedBox(height: 70),
+                Icon(
+                  Icons.notifications_none,
+                  size: 72,
+                  color: navy,
+                ),
+                SizedBox(height: 15),
+                Center(
+                  child: Text(
+                    'No notifications yet',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    'Customer notifications and updates will appear here.',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(20),
+            itemCount: notifications.length,
+            itemBuilder: (context, index) {
+              final notification = notifications[index].data();
+
+              return Card(
+                elevation: 0,
+                margin: const EdgeInsets.only(bottom: 14),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(16),
+                  leading: CircleAvatar(
+                    backgroundColor: gold.withOpacity(.18),
+                    child: const Icon(
+                      Icons.notifications_outlined,
+                      color: navy,
+                    ),
+                  ),
+                  title: Text(
+                    notification['title']?.toString() ??
+                        'Notification',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      notification['message']?.toString() ?? '',
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
