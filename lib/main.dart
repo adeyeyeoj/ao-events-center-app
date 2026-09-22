@@ -2070,12 +2070,18 @@ class AdminDashboardPage extends StatelessWidget {
             'Manage bookings, availability, pricing and venue information.',
           ),
           const SizedBox(height: 24),
-
           _AdminDashboardCard(
             icon: Icons.pending_actions,
             title: 'Booking Requests',
             subtitle: 'Review and manage customer booking requests.',
-            onTap: () {},
+            onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const BookingRequestsPage(),
+    ),
+  );
+},
           ),
 
           _AdminDashboardCard(
@@ -2147,6 +2153,177 @@ class _AdminDashboardCard extends StatelessWidget {
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
+      ),
+    );
+  }
+}
+class BookingRequestsPage extends StatelessWidget {
+  const BookingRequestsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Booking Requests'),
+      ),
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance
+            .collection('bookings')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text(
+                'Unable to load booking requests.',
+              ),
+            );
+          }
+
+          final bookings = snapshot.data?.docs ?? [];
+
+          if (bookings.isEmpty) {
+            return const Center(
+              child: Text(
+                'No booking requests yet.',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(20),
+            itemCount: bookings.length,
+            itemBuilder: (context, index) {
+              final booking = bookings[index].data();
+
+              final status =
+                  booking['status']?.toString() ?? 'pending';
+
+              return Card(
+                elevation: 0,
+                margin: const EdgeInsets.only(bottom: 16),
+                child: Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const CircleAvatar(
+                            backgroundColor: Color(0x1FDFA437),
+                            child: Icon(
+                              Icons.event,
+                              color: navy,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              booking['eventType']?.toString() ??
+                                  'Event',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                                color: navy,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            status.toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: navy,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const Divider(height: 28),
+
+                      Text(
+                        'Customer: ${booking['customerName'] ?? '-'}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Text(
+                        'Date: ${booking['eventDate'] ?? '-'}',
+                      ),
+
+                      Text(
+                        'Time: ${booking['startTime'] ?? '-'} - ${booking['endTime'] ?? '-'}',
+                      ),
+
+                      Text(
+                        'Guests: ${booking['guests'] ?? '-'}',
+                      ),
+
+                      Text(
+                        'Budget: ${booking['budget'] ?? '-'}',
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Text(
+                        'Phone: ${booking['phone'] ?? '-'}',
+                      ),
+
+                      Text(
+                        'Email: ${booking['email'] ?? '-'}',
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Text(
+                        'Reference: ${booking['reference'] ?? bookings[index].id}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+
+                      if (status == 'pending') ...[
+                        const SizedBox(height: 18),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () {},
+                                child: const Text('Decline'),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: const Text('Approve'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
