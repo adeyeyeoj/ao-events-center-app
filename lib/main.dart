@@ -2502,7 +2502,7 @@ class _PricingEditorPageState extends State<PricingEditorPage> {
     );
   }
 }
-}
+
 class _AdminDashboardCard extends StatelessWidget {
   final IconData icon;
   final String title;
