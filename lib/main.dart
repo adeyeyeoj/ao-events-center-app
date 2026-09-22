@@ -3160,7 +3160,6 @@ class BookingRequestsPage extends StatelessWidget {
                   ),
                 ),
           );
-          );
         },
       ),
     );
