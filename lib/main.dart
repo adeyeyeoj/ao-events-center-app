@@ -2088,7 +2088,14 @@ class AdminDashboardPage extends StatelessWidget {
             icon: Icons.calendar_month,
             title: 'Availability',
             subtitle: 'View upcoming events and available dates.',
-            onTap: () {},
+            onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const AvailabilityPage(),
+    ),
+  );
+},
           ),
 
           _AdminDashboardCard(
