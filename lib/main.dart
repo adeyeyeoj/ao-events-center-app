@@ -2978,7 +2978,32 @@ class BookingRequestsPage extends StatelessWidget {
               final status =
                   booking['status']?.toString() ?? 'pending';
 
-              return Card(
+              return InkWell(
+  onTap: () {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(
+          booking['eventType']?.toString() ?? 'Booking',
+        ),
+        content: Text(
+          'Customer: ${booking['customerName'] ?? '-'}\n'
+          'Date: ${booking['eventDate'] ?? '-'}\n'
+          'Time: ${booking['startTime'] ?? '-'} - ${booking['endTime'] ?? '-'}\n'
+          'Guests: ${booking['guests'] ?? '-'}\n'
+          'Phone: ${booking['phone'] ?? '-'}\n'
+          'Email: ${booking['email'] ?? '-'}',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  },
+  child: Card(
                 elevation: 0,
                 margin: const EdgeInsets.only(bottom: 16),
                 child: Padding(
@@ -3134,8 +3159,7 @@ class BookingRequestsPage extends StatelessWidget {
                     ],
                   ),
                 ),
-              );
-            },
+          );
           );
         },
       ),
