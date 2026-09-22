@@ -1896,7 +1896,12 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.pop(context);
+Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(
+    builder: (_) => const AdminDashboardPage(),
+  ),
+);
               },
               child: const Text('Continue'),
             ),
@@ -2040,3 +2045,109 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
     );
   }
   }
+class AdminDashboardPage extends StatelessWidget {
+  const AdminDashboardPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Admin Dashboard'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const Text(
+            'AO Events Center Admin',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              color: navy,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Manage bookings, availability, pricing and venue information.',
+          ),
+          const SizedBox(height: 24),
+
+          _AdminDashboardCard(
+            icon: Icons.pending_actions,
+            title: 'Booking Requests',
+            subtitle: 'Review and manage customer booking requests.',
+            onTap: () {},
+          ),
+
+          _AdminDashboardCard(
+            icon: Icons.calendar_month,
+            title: 'Availability',
+            subtitle: 'View upcoming events and available dates.',
+            onTap: () {},
+          ),
+
+          _AdminDashboardCard(
+            icon: Icons.payments_outlined,
+            title: 'Pricing',
+            subtitle: 'Adjust venue and event pricing.',
+            onTap: () {},
+          ),
+
+          _AdminDashboardCard(
+            icon: Icons.notifications_outlined,
+            title: 'Notifications',
+            subtitle: 'Manage customer notifications and updates.',
+            onTap: () {},
+          ),
+
+          _AdminDashboardCard(
+            icon: Icons.photo_library_outlined,
+            title: 'Venue Content',
+            subtitle: 'Manage gallery, facilities and event types.',
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AdminDashboardCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _AdminDashboardCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 14),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(16),
+        leading: CircleAvatar(
+          backgroundColor: gold.withOpacity(.18),
+          child: Icon(
+            icon,
+            color: navy,
+          ),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        subtitle: Text(subtitle),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: onTap,
+      ),
+    );
+  }
+}
