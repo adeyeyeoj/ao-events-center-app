@@ -1726,25 +1726,316 @@ class _BookingInfoRow extends StatelessWidget {
 }
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
+
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('More')),
-        body: ListView(padding: const EdgeInsets.all(20), children: const [
-          Text('AO Events Center',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900)),
-          SizedBox(height: 6),
-          Text('Ayodeji Oyebobola Street, Abijo G.R.A., Lagos.'),
-          SizedBox(height: 22),
-          ExploreCard(Icons.person_outline, 'Profile',
-              'Manage your customer details.'),
-          ExploreCard(Icons.notifications_none, 'Notifications',
-              'Booking updates and important messages.'),
-          ExploreCard(Icons.help_outline, 'FAQs', 'Common questions.'),
-          ExploreCard(Icons.phone, 'Contact Us',
-              '08101314792 • 07046674205'),
-          ExploreCard(Icons.email_outlined, 'Email', 'info@aoeventcenter.com'),
-          ExploreCard(Icons.location_on_outlined, 'Directions',
-              'Find the venue.'),
-        ]),
+        appBar: AppBar(
+          title: const Text('More'),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const Text(
+              'AO Events Center',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Text('Ayodeji Oyebobola Street, Abijo G.R.A., Lagos.'),
+            const SizedBox(height: 22),
+
+            ExploreCard(
+              Icons.person_outline,
+              'Profile',
+              'Manage your customer details.',
+            ),
+
+            ExploreCard(
+              Icons.notifications_none,
+              'Notifications',
+              'Booking updates and important messages.',
+            ),
+
+            ExploreCard(
+              Icons.help_outline,
+              'FAQs',
+              'Common questions about booking and the venue.',
+            ),
+
+            ExploreCard(
+              Icons.phone,
+              'Contact Us',
+              '08101314792 • 07046674205',
+            ),
+
+            ExploreCard(
+              Icons.email_outlined,
+              'Email',
+              'info@aoeventcenter.com',
+            ),
+
+            ExploreCard(
+              Icons.location_on_outlined,
+              'Directions',
+              'Find the venue.',
+            ),
+
+            const SizedBox(height: 24),
+
+            Card(
+              elevation: 0,
+              child: ListTile(
+                leading: const CircleAvatar(
+                  backgroundColor: Color(0x1FDFA437),
+                  child: Icon(
+                    Icons.admin_panel_settings_outlined,
+                    color: navy,
+                  ),
+                ),
+                title: const Text(
+                  'Staff / Admin Login',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                subtitle: const Text(
+                  'Authorized AO Events Center staff only.',
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AdminLoginPage(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       );
 }
+class AdminLoginPage extends StatefulWidget {
+  const AdminLoginPage({super.key});
+
+  @override
+  State<AdminLoginPage> createState() => _AdminLoginPageState();
+}
+
+class _AdminLoginPageState extends State<AdminLoginPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  bool loading = false;
+  bool obscurePassword = true;
+
+  Future<void> _login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter your email and password.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() => loading = true);
+
+    try {
+      final credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final user = credential.user;
+
+      if (user == null) {
+        throw Exception('Unable to sign in.');
+      }
+
+      final adminDoc = await FirebaseFirestore.instance
+          .collection('admins')
+          .doc(user.uid)
+          .get();
+
+      if (!adminDoc.exists ||
+          adminDoc.data()?['role'] != 'admin') {
+        await FirebaseAuth.instance.signOut();
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'This account is not authorized as an admin.',
+            ),
+          ),
+        );
+
+        return;
+      }
+
+      if (!mounted) return;
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+          title: const Text('Admin Login Successful'),
+          content: const Text(
+            'Welcome to the AO Events Center admin area.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text('Continue'),
+            ),
+          ],
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+
+      String message = 'Unable to sign in.';
+
+      if (e.code == 'invalid-credential') {
+        message = 'Incorrect email or password.';
+      } else if (e.code == 'user-not-found') {
+        message = 'No account was found with this email.';
+      } else if (e.code == 'wrong-password') {
+        message = 'Incorrect password.';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Something went wrong. Please try again.',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => loading = false);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Admin Login'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          const SizedBox(height: 30),
+
+          const Icon(
+            Icons.admin_panel_settings_outlined,
+            size: 80,
+            color: navy,
+          ),
+
+          const SizedBox(height: 20),
+
+          const Text(
+            'AO Events Center Admin',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w900,
+              color: navy,
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          const Text(
+            'Authorized staff only',
+            textAlign: TextAlign.center,
+          ),
+
+          const SizedBox(height: 35),
+
+          TextField(
+            controller: emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              labelText: 'Email',
+              prefixIcon: Icon(Icons.email_outlined),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          TextField(
+            controller: passwordController,
+            obscureText: obscurePassword,
+            decoration: InputDecoration(
+              labelText: 'Password',
+              prefixIcon: const Icon(Icons.lock_outline),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(
+                    () => obscurePassword = !obscurePassword,
+                  );
+                },
+                icon: Icon(
+                  obscurePassword
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 28),
+
+          SizedBox(
+            height: 52,
+            child: ElevatedButton(
+              onPressed: loading ? null : _login,
+              child: loading
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
