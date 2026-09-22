@@ -1957,15 +1957,6 @@ Navigator.pushReplacement(
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          const SizedBox(height: 30),
-
-          const Icon(
-            Icons.admin_panel_settings_outlined,
-            size: 80,
-            color: navy,
-          ),
-
-          const SizedBox(height: 20),
 
           const Text(
             'AO Events Center Admin',
