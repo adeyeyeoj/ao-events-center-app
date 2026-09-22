@@ -2303,7 +2303,29 @@ class BookingRequestsPage extends StatelessWidget {
                           children: [
                             Expanded(
                               child: OutlinedButton(
-                                onPressed: () {},
+                                onPressed: () async {
+  try {
+    await bookings[index].reference.update({
+      'status': 'declined',
+    });
+
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Booking declined successfully.'),
+      ),
+    );
+  } catch (e) {
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Unable to decline booking.'),
+      ),
+    );
+  }
+},
                                 child: const Text('Decline'),
                               ),
                             ),
