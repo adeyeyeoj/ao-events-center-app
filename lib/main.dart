@@ -3153,15 +3153,14 @@ class BookingRequestsPage extends StatelessWidget {
                                 child: const Text('Approve'),
                               ),
                             ),
-                          ],
-                        ),
-                                  ],
+                                          ],
+              ),
+            ],
           ),
         ),
       ),
     );
   },
 );
-}
 }
 }
