@@ -2130,9 +2130,159 @@ class AdminDashboardPage extends StatelessWidget {
             icon: Icons.photo_library_outlined,
             title: 'Venue Content',
             subtitle: 'Manage gallery, facilities and event types.',
-            onTap: () {},
+            onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const VenueContentPage(),
+    ),
+  );
+},
           ),
         ],
+      ),
+    );
+  }
+}
+class VenueContentPage extends StatelessWidget {
+  const VenueContentPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Venue Content'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const Text(
+            'Manage Venue Content',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
+              color: navy,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Access and manage the content customers see in the app.',
+          ),
+          const SizedBox(height: 24),
+
+          _AdminContentCard(
+            icon: Icons.photo_library_outlined,
+            title: 'Gallery',
+            subtitle: 'Manage venue images and approved event media.',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const GalleryPage(),
+                ),
+              );
+            },
+          ),
+
+          _AdminContentCard(
+            icon: Icons.auto_awesome,
+            title: 'Facilities',
+            subtitle: 'Manage the facilities and amenities displayed to customers.',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const FacilitiesPage(),
+                ),
+              );
+            },
+          ),
+
+          _AdminContentCard(
+            icon: Icons.celebration_outlined,
+            title: 'Event Types',
+            subtitle: 'Manage the types of events supported by the venue.',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const EventTypesPage(),
+                ),
+              );
+            },
+          ),
+
+          const SizedBox(height: 12),
+
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: gold.withOpacity(.12),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: navy,
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'These sections control the venue information presented throughout the AO Events Center app.',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AdminContentCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _AdminContentCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 14),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(16),
+        leading: CircleAvatar(
+          backgroundColor: gold.withOpacity(.18),
+          child: Icon(
+            icon,
+            color: navy,
+          ),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(subtitle),
+        ),
+        trailing: const Icon(
+          Icons.chevron_right,
+        ),
+        onTap: onTap,
       ),
     );
   }
