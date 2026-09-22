@@ -2102,7 +2102,14 @@ class AdminDashboardPage extends StatelessWidget {
             icon: Icons.payments_outlined,
             title: 'Pricing',
             subtitle: 'Adjust venue and event pricing.',
-            onTap: () {},
+            onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => const PricingPage(),
+    ),
+  );
+},
           ),
 
           _AdminDashboardCard(
@@ -2123,7 +2130,135 @@ class AdminDashboardPage extends StatelessWidget {
     );
   }
 }
+class PricingPage extends StatelessWidget {
+  const PricingPage({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Pricing'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const Text(
+            'Venue & Event Pricing',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              color: navy,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Manage pricing information for different event types.',
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 24),
+
+          _PricingCard(
+            icon: Icons.apartment_outlined,
+            title: 'Venue Hire',
+            subtitle: 'Set the standard venue hire price.',
+          ),
+
+          _PricingCard(
+            icon: Icons.favorite_outline,
+            title: 'Weddings',
+            subtitle: 'Set pricing for wedding events.',
+          ),
+
+          _PricingCard(
+            icon: Icons.cake_outlined,
+            title: 'Birthday Parties',
+            subtitle: 'Set pricing for birthday events.',
+          ),
+
+          _PricingCard(
+            icon: Icons.business_outlined,
+            title: 'Corporate Events',
+            subtitle: 'Set pricing for corporate events.',
+          ),
+
+          _PricingCard(
+            icon: Icons.event_outlined,
+            title: 'Other Events',
+            subtitle: 'Set pricing for other event categories.',
+          ),
+
+          const SizedBox(height: 16),
+
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: gold.withOpacity(.12),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: navy,
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Pricing will be connected to the Firebase database so changes can be managed from the admin area.',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PricingCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _PricingCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 14),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(16),
+        leading: CircleAvatar(
+          backgroundColor: gold.withOpacity(.18),
+          child: Icon(
+            icon,
+            color: navy,
+          ),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(subtitle),
+        ),
+        trailing: const Icon(
+          Icons.chevron_right,
+        ),
+      ),
+    );
+  }
+}
 class _AdminDashboardCard extends StatelessWidget {
   final IconData icon;
   final String title;
