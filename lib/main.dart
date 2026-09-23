@@ -3156,7 +3156,7 @@ class BookingRequestsPage extends StatelessWidget {
                                           ],
               ),
             ],
-          ),
+          ],
         ),
       ),
       },
