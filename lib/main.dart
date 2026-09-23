@@ -1781,40 +1781,7 @@ class MorePage extends StatelessWidget {
               'Directions',
               'Find the venue.',
             ),
-
-            const SizedBox(height: 24),
-
-            Card(
-              elevation: 0,
-              child: ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: Color(0x1FDFA437),
-                  child: Icon(
-                    Icons.admin_panel_settings_outlined,
-                    color: navy,
-                  ),
-                ),
-                title: const Text(
-                  'Staff / Admin Login',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                subtitle: const Text(
-                  'Authorized AO Events Center staff only.',
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AdminLoginPage(),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+              ],
         ),
       );
 }
