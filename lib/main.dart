@@ -2949,204 +2949,6 @@ class BookingRequestsPage extends StatelessWidget {
 
           if (snapshot.hasError) {
             return const Center(
-              child: Text(
-                'Unable to load booking requests.',
-              ),
-            );
-          }
-
-          final bookings = snapshot.data?.docs ?? [];
-
-          if (bookings.isEmpty) {
-            return const Center(
-              child: Text(
-                'No booking requests yet.',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(20),
-            itemCount: bookings.length,
-            itemBuilder: (context, index) {
-              final booking = bookings[index].data();
-
-              final status =
-                  booking['status']?.toString() ?? 'pending';
-
-              return InkWell(
-  onTap: () {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(
-          booking['eventType']?.toString() ?? 'Booking',
-        ),
-        content: Text(
-          'Customer: ${booking['customerName'] ?? '-'}\n'
-          'Date: ${booking['eventDate'] ?? '-'}\n'
-          'Time: ${booking['startTime'] ?? '-'} - ${booking['endTime'] ?? '-'}\n'
-          'Guests: ${booking['guests'] ?? '-'}\n'
-          'Phone: ${booking['phone'] ?? '-'}\n'
-          'Email: ${booking['email'] ?? '-'}',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  },
-  child: Card(
-                elevation: 0,
-                margin: const EdgeInsets.only(bottom: 16),
-                child: Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const CircleAvatar(
-                            backgroundColor: Color(0x1FDFA437),
-                            child: Icon(
-                              Icons.event,
-                              color: navy,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              booking['eventType']?.toString() ??
-                                  'Event',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                                color: navy,
-                              )
-                            ),
-                          ),
-                          Text(
-                            status.toUpperCase(),
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              color: navy,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const Divider(height: 28),
-
-                      Text(
-                        'Customer: ${booking['customerName'] ?? '-'}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      Text(
-                        'Date: ${booking['eventDate'] ?? '-'}',
-                      ),
-
-                      Text(
-                        'Time: ${booking['startTime'] ?? '-'} - ${booking['endTime'] ?? '-'}',
-                      ),
-
-                      Text(
-                        'Guests: ${booking['guests'] ?? '-'}',
-                      ),
-
-                      Text(
-                        'Budget: ${booking['budget'] ?? '-'}',
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      Text(
-                        'Phone: ${booking['phone'] ?? '-'}',
-                      ),
-
-                      Text(
-                        'Email: ${booking['email'] ?? '-'}',
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      Text(
-                        'Reference: ${booking['reference'] ?? bookings[index].id}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.black54,
-                        ),
-                      ),
-
-                      if (status == 'pending') ...[
-                        const SizedBox(height: 18),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: () async {
-  try {
-    await bookings[index].reference.update({
-      'status': 'declined',
-    });
-
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Booking declined successfully.'),
-      ),
-    );
-  } catch (e) {
-    if (!context.mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Unable to decline booking.'),
-      ),
-    );
-  }
-},
-                                child: const Text('Decline'),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-class BookingRequestsPage extends StatelessWidget {
-  const BookingRequestsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Booking Requests'),
-      ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance
-            .collection('bookings')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return const Center(
               child: Text('Unable to load booking requests.'),
             );
           }
@@ -3173,38 +2975,41 @@ class BookingRequestsPage extends StatelessWidget {
               final status =
                   booking['status']?.toString() ?? 'pending';
 
-              return InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: Text(
-                        booking['eventType']?.toString() ?? 'Booking',
-                      ),
-                      content: Text(
-                        'Customer: ${booking['customerName'] ?? '-'}\n'
-                        'Date: ${booking['eventDate'] ?? '-'}\n'
-                        'Time: ${booking['startTime'] ?? '-'} - '
-                        '${booking['endTime'] ?? '-'}\n'
-                        'Guests: ${booking['guests'] ?? '-'}\n'
-                        'Phone: ${booking['phone'] ?? '-'}\n'
-                        'Email: ${booking['email'] ?? '-'}\n'
-                        'Reference: '
-                        '${booking['reference'] ?? bookings[index].id}',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Close'),
+              return Card(
+                elevation: 0,
+                margin: const EdgeInsets.only(bottom: 16),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Text(
+                          booking['eventType']?.toString() ?? 'Booking',
                         ),
-                      ],
-                    ),
-                  );
-                },
-                child: Card(
-                  elevation: 0,
-                  margin: const EdgeInsets.only(bottom: 16),
+                        content: Text(
+                          'Customer: ${booking['customerName'] ?? '-'}\n'
+                          'Date: ${booking['eventDate'] ?? '-'}\n'
+                          'Time: ${booking['startTime'] ?? '-'} - '
+                          '${booking['endTime'] ?? '-'}\n'
+                          'Guests: ${booking['guests'] ?? '-'}\n'
+                          'Budget: ${booking['budget'] ?? '-'}\n'
+                          'Phone: ${booking['phone'] ?? '-'}\n'
+                          'Email: ${booking['email'] ?? '-'}\n'
+                          'Reference: '
+                          '${booking['reference'] ?? bookings[index].id}',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Close'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(18),
                     child: Column(
