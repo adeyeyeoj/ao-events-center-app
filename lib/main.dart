@@ -1749,7 +1749,7 @@ class MorePage extends StatelessWidget {
             ExploreCard(
               Icons.person_outline,
               'Profile',
-              'Manage your customer details.',
+              'Manage your profile.',
             ),
 
             ExploreCard(
@@ -1770,17 +1770,6 @@ class MorePage extends StatelessWidget {
               '08101314792 • 07046674205',
             ),
 
-            ExploreCard(
-              Icons.email_outlined,
-              'Email',
-              'info@aoeventcenter.com',
-            ),
-
-            ExploreCard(
-              Icons.location_on_outlined,
-              'Directions',
-              'Find the venue.',
-            ),
               ],
         ),
       );
