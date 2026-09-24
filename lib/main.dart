@@ -2109,10 +2109,18 @@ class MorePage extends StatelessWidget {
 ),
 
             ExploreCard(
-              Icons.notifications_none,
-              'Notifications',
-              'Booking updates and important messages.',
-            ),
+  Icons.notifications_none,
+  'Notifications',
+  'Booking updates and important messages.',
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const NotificationsPage(),
+      ),
+    );
+  },
+),
 
             ExploreCard(
               Icons.help_outline,
