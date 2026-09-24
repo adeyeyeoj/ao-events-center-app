@@ -23,10 +23,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
   assets:
     - AO_Events_Center_icon_preview.png
-    
-        - ao_events_center_3d_logo.png
+    - ao_events_center_3d_logo.png
     - assets/gallery/concept/
     - assets/gallery/videos/
