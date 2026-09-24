@@ -37,7 +37,7 @@ void initState() {
 
   _controller.forward();
 
-  _controller.addStatusListener((status) {
+  _controller.addStatusListener((status) async {
     if (status == AnimationStatus.completed && mounted) {
   await firebaseReady;
 
