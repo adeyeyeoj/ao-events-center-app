@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="LaunchTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowSplashScreenBackground">#071A33</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/android12_splash</item>
@@ -7,4 +8,5 @@
         <item name="android:statusBarColor">#071A33</item>
         <item name="android:navigationBarColor">#071A33</item>
     </style>
+
 </resources>
