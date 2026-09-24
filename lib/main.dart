@@ -1724,6 +1724,314 @@ class _BookingInfoRow extends StatelessWidget {
     );
   }
 }
+class CustomerProfilePage extends StatefulWidget {
+  const CustomerProfilePage({super.key});
+
+  @override
+  State<CustomerProfilePage> createState() => _CustomerProfilePageState();
+}
+
+class _CustomerProfilePageState extends State<CustomerProfilePage> {
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneController = TextEditingController();
+  final whatsappController = TextEditingController();
+  final addressController = TextEditingController();
+
+  String preferredCommunication = 'Phone';
+  bool loading = true;
+  bool saving = false;
+
+  Future<User?> _getUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      final credential =
+          await FirebaseAuth.instance.signInAnonymously();
+      user = credential.user;
+    }
+
+    return user;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final user = await _getUser();
+
+      if (user == null) {
+        throw Exception('Unable to create customer session.');
+      }
+
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      final data = doc.data();
+
+      if (data != null) {
+        nameController.text =
+            data['fullName']?.toString() ?? '';
+        emailController.text =
+            data['email']?.toString() ?? '';
+        phoneController.text =
+            data['phone']?.toString() ?? '';
+        whatsappController.text =
+            data['whatsapp']?.toString() ?? '';
+        addressController.text =
+            data['address']?.toString() ?? '';
+
+        final communication =
+            data['preferredCommunication']?.toString();
+
+        if (communication == 'Phone' ||
+            communication == 'WhatsApp' ||
+            communication == 'Email') {
+          preferredCommunication = communication!;
+        }
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Unable to load your profile. Please try again.',
+            ),
+          ),
+        );
+      }
+    }
+
+    if (mounted) {
+      setState(() => loading = false);
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final phone = phoneController.text.trim();
+
+    if (name.isEmpty || phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Please enter your full name and phone number.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    setState(() => saving = true);
+
+    try {
+      final user = await _getUser();
+
+      if (user == null) {
+        throw Exception('Unable to create customer session.');
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set({
+        'fullName': name,
+        'email': email,
+        'phone': phone,
+        'whatsapp': whatsappController.text.trim(),
+        'address': addressController.text.trim(),
+        'preferredCommunication': preferredCommunication,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Profile saved successfully.',
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Unable to save your profile. Please try again.',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => saving = false);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    whatsappController.dispose();
+    addressController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Profile'),
+      ),
+      body: loading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView(
+              padding: const EdgeInsets.all(20),
+              children: [
+                const Text(
+                  'Manage Your Profile',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    color: navy,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Keep your information up to date for easier '
+                  'booking and communication with AO Events Center.',
+                  style: TextStyle(
+                    fontSize: 15,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 28),
+
+                TextField(
+                  controller: nameController,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: const InputDecoration(
+                    labelText: 'Full Name',
+                    prefixIcon: Icon(Icons.person_outline),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                TextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'Email Address',
+                    prefixIcon: Icon(Icons.email_outlined),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                TextField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone Number',
+                    prefixIcon: Icon(Icons.phone_outlined),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                TextField(
+                  controller: whatsappController,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'WhatsApp Number',
+                    prefixIcon: Icon(Icons.chat_outlined),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                TextField(
+                  controller: addressController,
+                  textCapitalization: TextCapitalization.sentences,
+                  maxLines: 2,
+                  decoration: const InputDecoration(
+                    labelText: 'Address',
+                    prefixIcon: Icon(Icons.location_on_outlined),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                DropdownButtonFormField<String>(
+                  value: preferredCommunication,
+                  decoration: const InputDecoration(
+                    labelText: 'Preferred Communication',
+                    prefixIcon: Icon(Icons.contact_phone_outlined),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Phone',
+                      child: Text('Phone'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'WhatsApp',
+                      child: Text('WhatsApp'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Email',
+                      child: Text('Email'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() {
+                        preferredCommunication = value;
+                      });
+                    }
+                  },
+                ),
+
+                const SizedBox(height: 28),
+
+                SizedBox(
+                  height: 54,
+                  child: ElevatedButton.icon(
+                    onPressed: saving ? null : _saveProfile,
+                    icon: saving
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Icon(Icons.save_outlined),
+                    label: Text(
+                      saving ? 'Saving...' : 'Save Profile',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
 
@@ -1747,10 +2055,18 @@ class MorePage extends StatelessWidget {
             const SizedBox(height: 22),
 
             ExploreCard(
-              Icons.person_outline,
-              'Profile',
-              'Manage your profile.',
-            ),
+  Icons.person_outline,
+  'Profile',
+  'Manage your profile.',
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const CustomerProfilePage(),
+      ),
+    );
+  },
+),
 
             ExploreCard(
               Icons.notifications_none,
