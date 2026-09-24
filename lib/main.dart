@@ -91,8 +91,36 @@ class _AppShellState extends State<AppShell> {
       );
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+  
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late VideoPlayerController _heroVideoController;
+@override
+void initState() {
+  super.initState();
+
+  _heroVideoController = VideoPlayerController.asset(
+    'assets/gallery/videos/venue-video-1.mp4',
+  )
+    ..setLooping(true)
+    ..setVolume(0)
+    ..initialize().then((_) {
+      if (mounted) {
+        setState(() {});
+        _heroVideoController.play();
+      }
+    });
+}
+  @override
+void dispose() {
+  _heroVideoController.dispose();
+  super.dispose();
+}
   @override
   Widget build(BuildContext context) => SafeArea(
         child: ListView(
@@ -128,83 +156,127 @@ class HomePage extends StatelessWidget {
                   icon: const Icon(Icons.notifications_none)),
             ]),
             const SizedBox(height: 20),
-            Container(
-              height: 310,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                  color: navy, borderRadius: BorderRadius.circular(28)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
+            SizedBox(
+  height: 310,
+  child: ClipRRect(
+    borderRadius: BorderRadius.circular(28),
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        if (_heroVideoController.value.isInitialized)
+          FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              width: _heroVideoController.value.size.width,
+              height: _heroVideoController.value.size.height,
+              child: VideoPlayer(_heroVideoController),
+            ),
+          )
+        else
+          Container(color: navy),
+
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withOpacity(0.35),
+                Colors.black.withOpacity(0.70),
+              ],
+            ),
+          ),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Text(
+                'YOUR EVENT. OUR SPACE.',
+                style: TextStyle(
+                  color: gold,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.4,
+                ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'Make it unforgettable.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 31,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'A premium event destination for celebrations, gatherings and memorable occasions.',
+                style: TextStyle(
+                  color: Colors.white70,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 18),
+
+              Row(
                 children: [
-                  const Text('YOUR EVENT. OUR SPACE.',
-                      style: TextStyle(
-                          color: gold,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.4)),
-                  const SizedBox(height: 6),
-                  const Text('Make it unforgettable.',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 31,
-                          fontWeight: FontWeight.w900)),
-                  const SizedBox(height: 8),
-                  const Text(
-                      'A premium event destination for celebrations, gatherings and memorable moments.',
-                      style: TextStyle(color: Colors.white70, height: 1.4)),
-                  const SizedBox(height: 18),
-                  Row(
-  children: [
-    Expanded(
-      child: OutlinedButton.icon(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const CustomerProfilePage(),
-            ),
-          );
-        },
-        icon: const Icon(Icons.person_outline),
-        label: const Text('Create Profile'),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.white,
-          side: const BorderSide(color: gold),
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          textStyle: const TextStyle(
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
-    ),
-    const SizedBox(width: 10),
-    Expanded(
-      child: FilledButton.icon(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const BookingWizard(),
-            ),
-          );
-        },
-        icon: const Icon(Icons.calendar_month),
-        label: const Text('Book Your Event'),
-        style: FilledButton.styleFrom(
-          backgroundColor: gold,
-          foregroundColor: navy,
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          textStyle: const TextStyle(
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
-    ),
-  ],
-),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CustomerProfilePage(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.person_outline),
+                      label: const Text('Create Profile'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: gold),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const BookingWizard(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.calendar_month),
+                      label: const Text('Book Your Event'),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: gold,
+                        foregroundColor: navy,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
+),
             const SizedBox(height: 24),
             const Text('At a Glance',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
