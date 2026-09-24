@@ -42,7 +42,7 @@ class AOEventsApp extends StatelessWidget {
             ),
           ),
         ),
-        home: const AppShell(),
+        home: const AdminLoginPage(),
       );
 }
 
