@@ -9,9 +9,8 @@ const navy = Color(0xFF071A33);
 const gold = Color(0xFFD4AF37);
 const bg = Color(0xFFF7F8FA);
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   runApp(const AOEventsApp());
 }
 class SplashScreen extends StatefulWidget {
@@ -26,26 +25,32 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
 
   @override
-  void initState() {
-    super.initState();
+void initState() {
+  super.initState();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2200),
-    );
+  _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1200),
+  );
 
-    _controller.forward();
+  final firebaseReady = Firebase.initializeApp();
 
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed && mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => const AppShell(),
-          ),
-        );
-      }
-    });
-  }
+  _controller.forward();
+
+  _controller.addStatusListener((status) {
+    if (status == AnimationStatus.completed && mounted) {
+  await firebaseReady;
+
+  if (!mounted) return;
+
+  Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => const AppShell(),
+        ),
+      );
+    }
+  });
+}
 
   @override
   void dispose() {
