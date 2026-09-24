@@ -2072,7 +2072,116 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     );
   }
 }
-class MorePage extends StatelessWidget {
+class FAQPage extends StatelessWidget {
+  const FAQPage({super.key});
+
+  static const List<Map<String, String>> faqs = [
+    {
+      'question': 'How do I book AO Events Center?',
+      'answer':
+          'Tap Book Your Event, complete the booking form, review your details, and submit your request. Your request will be reviewed by the AO Events Center team.',
+    },
+    {
+      'question': 'Is my booking confirmed immediately?',
+      'answer':
+          'No. Submitting a booking request does not automatically confirm your event. Your request must be reviewed and approved by the AO Events Center team.',
+    },
+    {
+      'question': 'What types of events can I host?',
+      'answer':
+          'AO Events Center is suitable for weddings, birthday parties, engagement parties, burial receptions, corporate events, conferences, seminars, and launches.',
+    },
+    {
+      'question': 'How many guests can the venue accommodate?',
+      'answer':
+          'The venue can accommodate up to 1,200 guests, depending on the event setup and seating arrangement.',
+    },
+    {
+      'question': 'Is parking available?',
+      'answer':
+          'Yes. AO Events Center provides parking space for up to 500 vehicles.',
+    },
+    {
+      'question': 'Does the venue have power?',
+      'answer':
+          'Yes. AO Events Center provides 24-hour power to support events and venue operations.',
+    },
+    {
+      'question': 'Can I check the status of my booking?',
+      'answer':
+          'Yes. Open My Bookings in the app to view your submitted booking requests and their current status.',
+    },
+    {
+      'question': 'How can I contact AO Events Center?',
+      'answer':
+          'You can contact the team on 08101314792 or 07046674205.',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('FAQs'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const Text(
+            'Frequently Asked Questions',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w900,
+              color: navy,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Find answers to common questions about booking and AO Events Center.',
+            style: TextStyle(
+              fontSize: 15,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ...faqs.map(
+            (faq) => Card(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: ExpansionTile(
+                title: Text(
+                  faq['question']!,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                iconColor: gold,
+                collapsedIconColor: navy,
+                childrenPadding: const EdgeInsets.fromLTRB(
+                  16,
+                  0,
+                  16,
+                  16,
+                ),
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      faq['answer']!,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
   const MorePage({super.key});
 
   @override
@@ -2123,11 +2232,18 @@ class MorePage extends StatelessWidget {
 ),
 
             ExploreCard(
-              Icons.help_outline,
-              'FAQs',
-              'Common questions about booking and the venue.',
-            ),
-
+  Icons.help_outline,
+  'FAQs',
+  'Common questions about booking and the venue.',
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const FAQPage(),
+      ),
+    );
+  },
+),
             ExploreCard(
               Icons.phone,
               'Contact Us',
