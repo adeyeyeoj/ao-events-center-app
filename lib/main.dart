@@ -230,11 +230,13 @@ void dispose() {
           padding: const EdgeInsets.all(20),
           children: [
             Row(children: [
-              Image.asset(
-  'AO_Events_Center_icon_preview.png',
-  width: 52,
-  height: 52,
-  fit: BoxFit.contain,
+              ClipOval(
+  child: Image.asset(
+    'ao_events_center_3d_logo.png',
+    width: 58,
+    height: 58,
+    fit: BoxFit.cover,
+  ),
 ),
               const SizedBox(width: 12),
               const Expanded(
