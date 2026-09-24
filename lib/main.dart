@@ -153,15 +153,55 @@ class HomePage extends StatelessWidget {
                       'A premium event destination for celebrations, gatherings and memorable moments.',
                       style: TextStyle(color: Colors.white70, height: 1.4)),
                   const SizedBox(height: 18),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                        backgroundColor: gold, foregroundColor: navy),
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const BookingWizard())),
-                    child: const Text('Book Your Event'),
-                  ),
+                  Row(
+  children: [
+    Expanded(
+      child: OutlinedButton.icon(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const CustomerProfilePage(),
+            ),
+          );
+        },
+        icon: const Icon(Icons.person_outline),
+        label: const Text('Create Profile'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.white,
+          side: const BorderSide(color: gold),
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ),
+    ),
+    const SizedBox(width: 10),
+    Expanded(
+      child: FilledButton.icon(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const BookingWizard(),
+            ),
+          );
+        },
+        icon: const Icon(Icons.calendar_month),
+        label: const Text('Book Your Event'),
+        style: FilledButton.styleFrom(
+          backgroundColor: gold,
+          foregroundColor: navy,
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ),
+    ),
+  ],
+),
                 ],
               ),
             ),
