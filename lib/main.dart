@@ -14,6 +14,109 @@ void main() async {
   await Firebase.initializeApp();
   runApp(const AOEventsApp());
 }
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    );
+
+    _controller.forward();
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed && mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => const SplashScreen(),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: navy,
+      body: Center(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            final rotation = (_controller.value - 0.5) * 0.9;
+            final scale =
+                0.72 + (_controller.value.clamp(0.0, 1.0) * 0.28);
+
+            return Opacity(
+              opacity: Curves.easeOut.transform(
+                _controller.value.clamp(0.0, 1.0),
+              ),
+              child: Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.0015)
+                  ..rotateY(rotation)
+                  ..scale(scale),
+                child: child,
+              ),
+            );
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipOval(
+                child: Image.asset(
+                  'ao_events_center_3d_logo.png',
+                  width: 270,
+                  height: 270,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'EVENTS CENTER',
+                style: TextStyle(
+                  color: gold,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 3,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Abijo • Lekki-Epe Expressway • Lagos',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 12,
+                  letterSpacing: .5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class AOEventsApp extends StatelessWidget {
   const AOEventsApp({super.key});
