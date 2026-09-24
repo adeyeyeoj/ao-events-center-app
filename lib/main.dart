@@ -9,8 +9,9 @@ const navy = Color(0xFF071A33);
 const gold = Color(0xFFD4AF37);
 const bg = Color(0xFFF7F8FA);
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const AOEventsApp());
 }
 class SplashScreen extends StatefulWidget {
@@ -33,13 +34,10 @@ void initState() {
     duration: const Duration(milliseconds: 1200),
   );
 
-  final firebaseReady = Firebase.initializeApp();
-
   _controller.forward();
 
-  _controller.addStatusListener((status) async {
+  _controller.addStatusListener((status) {
     if (status == AnimationStatus.completed && mounted) {
-  await firebaseReady;
 
   if (!mounted) return;
 
