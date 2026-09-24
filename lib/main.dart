@@ -2254,6 +2254,7 @@ class FAQPage extends StatelessWidget {
     );
   }
 }
+class MorePage extends StatelessWidget {
   const MorePage({super.key});
 
   @override
