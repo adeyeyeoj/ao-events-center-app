@@ -1453,8 +1453,8 @@ class _BookingWizardState extends State<BookingWizard> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-            },
+  Navigator.of(context).popUntil((route) => route.isFirst);
+},
             child: const Text('Done'),
           ),
         ],
