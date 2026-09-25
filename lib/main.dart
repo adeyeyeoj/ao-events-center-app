@@ -1632,24 +1632,24 @@ class _BookingWizardState extends State<BookingWizard> {
         children: [
           heading('Your details', 'How should AO Events Center contact you?'),
           TextFormField(
-              decoration: const InputDecoration(labelText: 'Full name'),
+              decoration: const InputDecoration(hintText: 'Full name'),
               onChanged: (v) => data.name = v),
           const SizedBox(height: 14),
           TextFormField(
               keyboardType: TextInputType.phone,
               decoration:
-                  const InputDecoration(labelText: 'Phone / WhatsApp'),
+                  const InputDecoration(hintText: 'Phone / WhatsApp'),
               onChanged: (v) => data.phone = v),
           const SizedBox(height: 14),
           TextFormField(
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: 'Email (optional)'),
+              decoration: const InputDecoration(hintText: 'Email (optional)'),
               onChanged: (v) => data.email = v),
           const SizedBox(height: 14),
           TextFormField(
               maxLines: 4,
               decoration:
-                  const InputDecoration(labelText: 'Additional notes (optional)'),
+                  const InputDecoration(hintText: 'Additional notes (optional)'),
               onChanged: (v) => data.notes = v),
         ],
       );
