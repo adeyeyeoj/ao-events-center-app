@@ -162,7 +162,6 @@ class _AppShellState extends State<AppShell> {
   final pages = const [
     HomePage(),
     ExplorePage(),
-    BookingWizard(),
     BookingsPage(),
     MorePage()
   ];
@@ -182,10 +181,6 @@ class _AppShellState extends State<AppShell> {
                 icon: Icon(Icons.explore_outlined),
                 selectedIcon: Icon(Icons.explore),
                 label: 'Explore'),
-            NavigationDestination(
-                icon: Icon(Icons.calendar_month_outlined),
-                selectedIcon: Icon(Icons.calendar_month),
-                label: 'Book'),
             NavigationDestination(
                 icon: Icon(Icons.receipt_long_outlined),
                 selectedIcon: Icon(Icons.receipt_long),
